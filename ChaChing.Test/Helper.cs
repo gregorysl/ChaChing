@@ -20,10 +20,13 @@ namespace ChaChing.Test
             }
         }
 
-        public Dictionary<string, string> LoadTestDataDictionary()
+        public Dictionary<int, string> LoadTestDataDictionary()
         {
             var fileContents = ReadResource("TestData.csv");
-            return fileContents.Split( new[] { "\r\n", "\r", "\n" },StringSplitOptions.RemoveEmptyEntries).Select(line => line.Split(',')).ToDictionary(line => line[0], line => line[1]);
+            return fileContents.Split(new[] {"\r\n", "\r", "\n"}, StringSplitOptions.RemoveEmptyEntries)
+                .Select(line => line.Split(','))
+                .Select(x => new KeyValuePair<int, string>(Convert.ToInt32(x[0]), x[1]))
+                .ToDictionary(line => line.Key, line => line.Value);
         }
     }
 }
