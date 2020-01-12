@@ -92,7 +92,7 @@ namespace ChaChing
             return ReverseListAppender(sb,dict);
         }
 
-        public string ToWords(float number)
+        public string ToWords(decimal number)
         {
             var dict = new List<string>();
             var sb = new StringBuilder();
