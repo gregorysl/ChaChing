@@ -34,8 +34,8 @@ namespace ChaChing.Test
         [TestMethod]
         public void TestOne()
         {
-            const int number = 999993;
-            const string text = "nine hundred ninety-nine thousand nine hundred ninety-three dollars";
+            const int number = 1071339;
+            const string text = "one million seventy-one thousand three hundred thirty-nine dollars";
             var c = new Converter();
             var result = c.ToWords(number);
             Assert.AreEqual(text, result);
