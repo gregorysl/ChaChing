@@ -7,10 +7,9 @@ namespace ChaChing
     public class Converter
     {
 
-        public const string Dollar = " dollar";
-        public const string Hundred = " hundred";
-        public const string Thousand = " thousand";
-
+        public const string Dollar = "dollar";
+        public const string Hundred = "hundred";
+        public string[] Separators = {"", "thousand", "million"};
         public Dictionary<int, string> Cardinal = new Dictionary<int, string>
         {
             {0, "zero"},
@@ -87,8 +86,7 @@ namespace ChaChing
             var hundreds = dollars % 10;
             if (hundreds != 0)
             {
-                var hundredToAdd = dict.Any() ? $"{Hundred} " : Hundred;
-                dict.Add(hundredToAdd);
+                dict.Add(Hundred);
                 dict.Add(Cardinal[hundreds]);
             }
             return ReverseListAppender(sb,dict);
@@ -102,18 +100,18 @@ namespace ChaChing
             var dollars = (int) number;
             var isSingle = dollars == 1;
             
-            var a = new[] {"", "thousand"};
-            
-            var hundreds = ConvertHundreds(dollars);
-            dict.Add(hundreds);
-            dollars /= 1000;
-            if (dollars > 0)
+            foreach (var separator in Separators)
             {
-                var thousands = ConvertHundreds(dollars);
-                var thousandToAdd = !string.IsNullOrEmpty(hundreds) ? $"{Thousand} " : Thousand;
-                dict.Add(thousandToAdd);
-                dict.Add(thousands);
+                var previous = ConvertHundreds(dollars);
+                if (!string.IsNullOrWhiteSpace(previous))
+                {
+                    dict.Add(separator);
+                    dict.Add(previous);
+                }
+
                 dollars /= 1000;
+
+                if (dollars <= 0) break;
             }
 
             sb.Append(Dollar);
@@ -130,12 +128,13 @@ namespace ChaChing
 
         private string ReverseListAppender(StringBuilder sb,List<string> dict)
         {
+            dict = dict.Where(x => !string.IsNullOrWhiteSpace(x)).ToList(); //TODO: Find better solution
             for (var i = dict.Count - 1; i >= 0; i--)
             {
-                sb.Append(dict[i]);
+                sb.Append(dict[i]).Append(" ");
             }
 
-            return sb.ToString();
+            return sb.ToString().Trim();
         }
 
         private KeyValuePair<int, string> FirstSmaller(int number)
