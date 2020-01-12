@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ChaChing.Test
@@ -35,12 +34,11 @@ namespace ChaChing.Test
         [TestMethod]
         public void TestOne()
         {
-            var number = 1019;
-            var text = "one thousand nineteen dollars";
+            const int number = 999993;
+            const string text = "nine hundred ninety-nine thousand nine hundred ninety-three dollars";
             var c = new Converter();
             var result = c.ToWords(number);
             Assert.AreEqual(text, result);
-
         }
     }
 }
