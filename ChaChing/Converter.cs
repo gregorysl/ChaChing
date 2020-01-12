@@ -54,6 +54,45 @@ namespace ChaChing
             }
         }
 
+        public string ConvertHundreds(int dollars)
+        {
+            var sb= new StringBuilder();
+            var dict = new List<string>();
+            var lessThan100 = dollars - dollars / 100 * 100;
+            if (Cardinal.ContainsKey(lessThan100))
+            {
+                var item = Cardinal[lessThan100];
+                if (lessThan100 != 0 || lessThan100 == 0 && dollars == 0)
+                {
+                    dict.Add(item);
+                }
+            }
+            else
+            {
+                var smaller = FirstSmaller(lessThan100);
+                sb.Append(smaller.Value);
+                var remaining = lessThan100 - smaller.Key;
+                if (remaining > 0)
+                {
+                    var remainingKey = Cardinal[remaining];
+                    sb.Append("-").Append(remainingKey);
+                }
+
+                dict.Add(sb.ToString());
+                sb.Clear();
+            }
+
+            dollars /= 100;
+            var hundreds = dollars % 10;
+            if (hundreds != 0)
+            {
+                var hundredToAdd = dict.Any() ? $"{Hundred} " : Hundred;
+                dict.Add(hundredToAdd);
+                dict.Add(Cardinal[hundreds]);
+            }
+            return ReverseListAppender(sb,dict);
+        }
+
         public string ToWords(float number)
         {
             var dict = new List<string>();
@@ -61,7 +100,6 @@ namespace ChaChing
 
             var dollars = (int) number;
             var isSingle = dollars == 1;
-
 
             var lessThan100 = dollars - dollars / 100 * 100;
             if (Cardinal.ContainsKey(lessThan100))
@@ -96,7 +134,6 @@ namespace ChaChing
                 dict.Add(Cardinal[hundreds]);
             }
 
-
             sb.Append(Dollar);
             if (!isSingle)
             {
@@ -105,6 +142,12 @@ namespace ChaChing
 
             dict.Insert(0, sb.ToString());
             sb.Clear();
+
+            return ReverseListAppender(sb,dict);
+        }
+
+        private string ReverseListAppender(StringBuilder sb,List<string> dict)
+        {
             for (var i = dict.Count - 1; i >= 0; i--)
             {
                 sb.Append(dict[i]);
@@ -113,7 +156,7 @@ namespace ChaChing
             return sb.ToString();
         }
 
-        public KeyValuePair<int, string> FirstSmaller(int number)
+        private KeyValuePair<int, string> FirstSmaller(int number)
         {
             return Cardinal.Last(x => x.Key < number);
         }

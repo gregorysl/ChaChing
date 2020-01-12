@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ChaChing.Test
@@ -13,8 +14,21 @@ namespace ChaChing.Test
             var c = new Converter();
             foreach (var test in tests)
             {
-                var result = c.ToWords(Convert.ToInt64(test.Key));
+                var result = c.ToWords(test.Key);
                 Assert.AreEqual(test.Value, result);
+            }
+        }
+        [TestMethod]
+        public void CheckHundreds()
+        {
+            var data = new Helper().LoadTestDataDictionary();
+            data.Remove(1);
+                var tests = data.Where(x => x.Key < 1000);
+            var c = new Converter();
+            foreach (var test in tests)
+            {
+                var result = c.ConvertHundreds(test.Key);
+                Assert.AreEqual(test.Value.Replace(" dollars",""), result);
             }
         }
 
