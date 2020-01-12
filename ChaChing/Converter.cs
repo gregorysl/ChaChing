@@ -1,6 +1,106 @@
-﻿namespace ChaChing
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace ChaChing
 {
     public class Converter
     {
+        
+        public const string Dollar = " dollar";
+        public Dictionary<int, string> Cardinal = new Dictionary<int, string>
+        {
+            {0, "zero"},
+            {1, "one"},
+            {2, "two"},
+            {3, "three"},
+            {4, "four"},
+            {5, "five"},
+            {6, "six"},
+            {7, "seven"},
+            {8, "eight"},
+            {9, "nine"},
+            {10, "ten"},
+            {11, "eleven"},
+            {12, "twelve"},
+            {13, "thirteen"},
+            {14, "fourteen"},
+            {15, "fifteen"},
+            {16, "sixteen"},
+            {17, "seventeen"},
+            {18, "eighteen"},
+            {19, "nineteen"}
+        };
+
+        public Dictionary<int, string> Tens = new Dictionary<int, string>
+        {
+            {20, "twenty"},
+            {30, "thirty"},
+            {40, "forty"},
+            {50, "fifty"},
+            {60, "sixty"},
+            {70, "seventy"},
+            {80, "eighty"},
+            {90, "ninety"}
+        };
+
+        public Converter()
+        {
+            foreach (var ten in Tens)
+            {
+                Cardinal.Add(ten.Key, ten.Value);
+            }
+        }
+        public string ToWords(float number)
+        {
+            var one = false;
+            var dict = new List<string>();
+            var sb = new StringBuilder();
+
+            var dollars = (int) number;
+
+            if (dollars < 100)
+            {
+                one = dollars == 1;
+                if (Cardinal.ContainsKey(dollars))
+                {
+                    var item = Cardinal[dollars];
+                    sb.Append(item);
+                }
+                else
+                {
+                    var smaller = FirstSmaller(dollars);
+                    sb.Append(smaller.Value);
+                    var remaining = dollars - smaller.Key;
+                    if (remaining > 0)
+                    {
+                        var remainingKey = Cardinal[remaining];
+                        sb.Append("-").Append(remainingKey);
+                    }
+                }
+
+                dict.Add(sb.ToString());
+                sb.Clear();
+            }
+
+            sb.Append(Dollar);
+            if (!one)
+            {
+                sb.Append("s");
+            }
+
+            dict.Insert(0, sb.ToString());
+            sb.Clear();
+            for (var i = dict.Count - 1; i >= 0; i--)
+            {
+                sb.Append(dict[i]);
+            }
+
+            return sb.ToString();
+        }
+        public KeyValuePair<int, string> FirstSmaller(int number)
+        {
+            return Cardinal.Last(x => x.Key < number);
+        }
     }
 }
