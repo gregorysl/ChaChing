@@ -6,8 +6,10 @@ namespace ChaChing
 {
     public class Converter
     {
-        
+
         public const string Dollar = " dollar";
+        public const string Hundred = " hundred";
+
         public Dictionary<int, string> Cardinal = new Dictionary<int, string>
         {
             {0, "zero"},
@@ -51,40 +53,52 @@ namespace ChaChing
                 Cardinal.Add(ten.Key, ten.Value);
             }
         }
+
         public string ToWords(float number)
         {
-            var one = false;
             var dict = new List<string>();
             var sb = new StringBuilder();
 
             var dollars = (int) number;
+            var isSingle = dollars == 1;
 
-            if (dollars < 100)
+
+            var lessThan100 = dollars - dollars / 100 * 100;
+            if (Cardinal.ContainsKey(lessThan100))
             {
-                one = dollars == 1;
-                if (Cardinal.ContainsKey(dollars))
+                var item = Cardinal[lessThan100];
+                if (lessThan100 != 0 || lessThan100 == 0 && dollars == 0)
                 {
-                    var item = Cardinal[dollars];
-                    sb.Append(item);
+                    dict.Add(item);
                 }
-                else
+            }
+            else
+            {
+                var smaller = FirstSmaller(lessThan100);
+                sb.Append(smaller.Value);
+                var remaining = lessThan100 - smaller.Key;
+                if (remaining > 0)
                 {
-                    var smaller = FirstSmaller(dollars);
-                    sb.Append(smaller.Value);
-                    var remaining = dollars - smaller.Key;
-                    if (remaining > 0)
-                    {
-                        var remainingKey = Cardinal[remaining];
-                        sb.Append("-").Append(remainingKey);
-                    }
+                    var remainingKey = Cardinal[remaining];
+                    sb.Append("-").Append(remainingKey);
                 }
 
                 dict.Add(sb.ToString());
                 sb.Clear();
             }
 
+            dollars /= 100;
+            var hundreds = dollars % 10;
+            if (hundreds != 0)
+            {
+                var hundredToAdd = dict.Any() ? $"{Hundred} " : Hundred;
+                dict.Add(hundredToAdd);
+                dict.Add(Cardinal[hundreds]);
+            }
+
+
             sb.Append(Dollar);
-            if (!one)
+            if (!isSingle)
             {
                 sb.Append("s");
             }
@@ -98,6 +112,7 @@ namespace ChaChing
 
             return sb.ToString();
         }
+
         public KeyValuePair<int, string> FirstSmaller(int number)
         {
             return Cardinal.Last(x => x.Key < number);
