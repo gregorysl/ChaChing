@@ -9,6 +9,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChaChing.Test", "..\ChaChin
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChaChing.Service", "..\ChaChing.Service\ChaChing.Service.csproj", "{98BE065F-DA03-40D9-A5B0-385019EC34B8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChaChing.UI", "..\ChaChing.UI\ChaChing.UI.csproj", "{B6E20462-837C-4F48-89CB-2C32985671DF}"
+	ProjectSection(ProjectDependencies) = postProject
+		{98BE065F-DA03-40D9-A5B0-385019EC34B8} = {98BE065F-DA03-40D9-A5B0-385019EC34B8}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +32,10 @@ Global
 		{98BE065F-DA03-40D9-A5B0-385019EC34B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{98BE065F-DA03-40D9-A5B0-385019EC34B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{98BE065F-DA03-40D9-A5B0-385019EC34B8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6E20462-837C-4F48-89CB-2C32985671DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6E20462-837C-4F48-89CB-2C32985671DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6E20462-837C-4F48-89CB-2C32985671DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6E20462-837C-4F48-89CB-2C32985671DF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
