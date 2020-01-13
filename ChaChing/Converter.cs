@@ -76,6 +76,7 @@ namespace ChaChing
             return resultNumber;
 
         }
+
         public string ConvertHundreds(int number)
         {
             var tens = ConvertTens(number);
@@ -85,49 +86,40 @@ namespace ChaChing
             if (hundredsDigit != 0)
             {
                 var tensSeparator = tens != "" ? " " : "";
-                return string.Concat(Cardinal[hundredsDigit]," ",Hundred, tensSeparator,tens);
+                return string.Concat(Cardinal[hundredsDigit], " ", Hundred, tensSeparator, tens);
             }
+
             return tens;
         }
 
         public string ToWords(decimal number)
         {
             var dict = new List<string>();
-            var sb = new StringBuilder();
-
+            
             var dollars = (int) number;
             var isSingle = dollars == 1;
-            
+
             foreach (var separator in Separators)
             {
-                var previous = ConvertHundreds(dollars);
-                if (!string.IsNullOrWhiteSpace(previous))
+                var hundreds = ConvertHundreds(dollars);
+                if (!string.IsNullOrWhiteSpace(hundreds))
                 {
-                    dict.Add(separator);
-                    dict.Add(previous);
+                    var separatorSpace = string.IsNullOrEmpty(separator) ? "" : " ";
+                    dict.Add(string.Concat(hundreds, separatorSpace, separator));
                 }
-
                 dollars /= 1000;
 
                 if (dollars <= 0) break;
             }
 
-            sb.Append(Dollar);
-            if (!isSingle)
-            {
-                sb.Append("s");
-            }
+            dict.Insert(0, isSingle ? Dollar : $"{Dollar}s");
 
-            dict.Insert(0, sb.ToString());
-            sb.Clear();
-
-            return ReverseListAppender(sb,dict);
+            return ReverseListAppender(dict);
         }
 
-        private string ReverseListAppender(StringBuilder sb,List<string> dict)
+        private string ReverseListAppender(List<string> dict)
         {
-            sb = sb ?? new StringBuilder();
-            dict = dict.Where(x => !string.IsNullOrWhiteSpace(x)).ToList(); //TODO: Find better solution
+            var sb = new StringBuilder();
             for (var i = dict.Count - 1; i >= 0; i--)
             {
                 sb.Append(dict[i]).Append(" ");
