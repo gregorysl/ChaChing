@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -21,9 +22,7 @@ namespace ChaChing.Test
         [TestMethod]
         public void CheckHundreds()
         {
-            var data = new Helper().LoadTestDataDictionary();
-            data.Remove("1");
-            var tests = data.Where(x => (Convert.ToDouble(x.Key) - Math.Truncate(Convert.ToDouble(x.Key))).Equals(0) && Convert.ToDouble(x.Key) < 1000);
+            var tests = LoadTestDataForNumbers(1000);
             var c = new Converter();
             foreach (var test in tests)
             {
@@ -34,9 +33,7 @@ namespace ChaChing.Test
         [TestMethod]
         public void CheckTens()
         {
-            var data = new Helper().LoadTestDataDictionary();
-            data.Remove("1");
-            var tests = data.Where(x => (Convert.ToDouble(x.Key) - Math.Truncate(Convert.ToDouble(x.Key))).Equals(0) && Convert.ToDouble(x.Key) < 100);
+            var tests = LoadTestDataForNumbers(100);
             var c = new Converter();
             foreach (var test in tests)
             {
@@ -44,7 +41,7 @@ namespace ChaChing.Test
                 Assert.AreEqual(test.Value.Replace(" dollars", ""), result);
             }
         }
-
+        
         [TestMethod]
         public void TestOne()
         {
@@ -53,6 +50,19 @@ namespace ChaChing.Test
             var c = new Converter();
             var result = c.ToWords(number);
             Assert.AreEqual(text, result);
+        }
+        
+        private static IEnumerable<KeyValuePair<string, string>> LoadTestDataForNumbers(int max)
+        {
+            var data = new Helper().LoadTestDataDictionary();
+            data.Remove("1");
+            var tests = data.Where(x=>
+            {
+                var currentNumber = Convert.ToDouble(x.Key);
+                var numberAsInteger = currentNumber - Math.Truncate(currentNumber);
+                return numberAsInteger.Equals(0) && currentNumber < max;
+            });
+            return tests;
         }
     }
 }
