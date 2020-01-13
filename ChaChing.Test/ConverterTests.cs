@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ChaChing.Test
@@ -13,7 +14,7 @@ namespace ChaChing.Test
             var c = new Converter();
             foreach (var test in tests)
             {
-                var result = c.ToWords(test.Key);
+                var result = c.ToWords(Convert.ToDecimal(test.Key));
                 Assert.AreEqual(test.Value, result);
             }
         }
@@ -21,26 +22,26 @@ namespace ChaChing.Test
         public void CheckHundreds()
         {
             var data = new Helper().LoadTestDataDictionary();
-            data.Remove(1);
-            var tests = data.Where(x => x.Key < 1000);
+            data.Remove("1");
+            var tests = data.Where(x => (Convert.ToDouble(x.Key) - Math.Truncate(Convert.ToDouble(x.Key))).Equals(0) && Convert.ToDouble(x.Key) < 1000);
             var c = new Converter();
             foreach (var test in tests)
             {
-                var result = c.ConvertHundreds(test.Key);
-                Assert.AreEqual(test.Value.Replace(" dollars",""), result);
+                var result = c.ConvertHundreds(Convert.ToDecimal(test.Key));
+                Assert.AreEqual(test.Value.Replace(" dollars", ""), result);
             }
         }
         [TestMethod]
         public void CheckTens()
         {
             var data = new Helper().LoadTestDataDictionary();
-            data.Remove(1);
-            var tests = data.Where(x => x.Key < 100);
+            data.Remove("1");
+            var tests = data.Where(x => (Convert.ToDouble(x.Key) - Math.Truncate(Convert.ToDouble(x.Key))).Equals(0) && Convert.ToDouble(x.Key) < 100);
             var c = new Converter();
             foreach (var test in tests)
             {
-                var result = c.ConvertHundreds(test.Key);
-                Assert.AreEqual(test.Value.Replace(" dollars",""), result);
+                var result = c.ConvertTens(Convert.ToDecimal(test.Key));
+                Assert.AreEqual(test.Value.Replace(" dollars", ""), result);
             }
         }
 

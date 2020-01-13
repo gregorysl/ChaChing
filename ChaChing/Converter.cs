@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -6,7 +7,8 @@ namespace ChaChing
 {
     public class Converter
     {
-
+        
+        public const string Cent = "cent";
         public const string Dollar = "dollar";
         public const string Hundred = "hundred";
         public string[] Separators = {"", "thousand", "million"};
@@ -54,22 +56,26 @@ namespace ChaChing
             }
         }
 
-        public string ConvertTens(int number)
+        private string ConvertCents(decimal number)
         {
-            var lessThan100 = number - number / 100 * 100;
-            if (Cardinal.ContainsKey(lessThan100))
-            {
-                var item = Cardinal[lessThan100];
-                if (lessThan100 != 0 || lessThan100 == 0 && number == 0)
-                {
-                    return item;
-                }
+            var tensCent = (int) ((number - Math.Truncate(number)) * 100);
+            var wordNumber = ConvertHundreds(tensCent);
+            var centsEnding = tensCent == 1 ? "" : "s";
+            var centValue = string.Concat(" and ", wordNumber, " ", Cent, centsEnding);
+            return centValue;
+        }
 
-                return "";
+        public string ConvertTens(decimal number)
+        {
+            var restFrom100 = (int) (number % 100);
+            if (Cardinal.ContainsKey(restFrom100))
+            {
+                var item = Cardinal[restFrom100];
+                return !restFrom100.Equals(0) || restFrom100.Equals(0) && number.Equals(0) ? item : "";
             }
 
-            var cardinalNumber = FirstCardinalNumberSmallerThan(lessThan100);
-            var remainingDigit = lessThan100 - cardinalNumber.Key;
+            var cardinalNumber = FirstCardinalNumberSmallerThan(restFrom100);
+            var remainingDigit = restFrom100 - cardinalNumber.Key;
             var remainingValue = Cardinal[remainingDigit];
             var resultNumber = string.Concat(cardinalNumber.Value, "-", remainingValue);
 
@@ -77,12 +83,12 @@ namespace ChaChing
 
         }
 
-        public string ConvertHundreds(int number)
+        public string ConvertHundreds(decimal number)
         {
             var tens = ConvertTens(number);
 
             number /= 100;
-            var hundredsDigit = number % 10;
+            var hundredsDigit = (int)(number % 10);
             if (hundredsDigit != 0)
             {
                 var tensSeparator = tens != "" ? " " : "";
@@ -91,30 +97,37 @@ namespace ChaChing
 
             return tens;
         }
-
-        public string ToWords(decimal number)
+        private string ConvertNumber(decimal number)
         {
+            var sb = new StringBuilder();
             var dict = new List<string>();
-            
-            var dollars = (int) number;
-            var isSingle = dollars == 1;
+            var integer = (int) number;
 
             foreach (var separator in Separators)
             {
-                var hundreds = ConvertHundreds(dollars);
+                var hundreds = ConvertHundreds(integer);
                 if (!string.IsNullOrWhiteSpace(hundreds))
                 {
                     var separatorSpace = string.IsNullOrEmpty(separator) ? "" : " ";
-                    dict.Add(string.Concat(hundreds, separatorSpace, separator));
+                    var separatorWord = string.Concat(hundreds, separatorSpace, separator);
+                    dict.Add(separatorWord);
                 }
-                dollars /= 1000;
 
-                if (dollars <= 0) break;
+                integer /= 1000;
+
+                if (integer <= 0) break;
             }
-
-            dict.Insert(0, isSingle ? Dollar : $"{Dollar}s");
-
+            
             return ReverseListAppender(dict);
+        }
+
+        public string ToWords(decimal number)
+        {
+            var wordedNumber = ConvertNumber(number);
+            var dollarsEnding = ((int)number).Equals(1) ? "" : "s";
+            var centValue = number != Math.Truncate(number) ? ConvertCents(number) : "";
+
+            return string.Concat(wordedNumber, " ", Dollar, dollarsEnding, centValue);
         }
 
         private string ReverseListAppender(List<string> dict)
