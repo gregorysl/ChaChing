@@ -69,42 +69,25 @@ namespace ChaChing
             }
 
             var cardinalNumber = FirstCardinalNumberSmallerThan(lessThan100);
-            var digit = lessThan100 - cardinalNumber.Key;
-            var remainingKey = Cardinal[digit];
-            var resultNumber = string.Concat(cardinalNumber.Value, "-", remainingKey);
+            var remainingDigit = lessThan100 - cardinalNumber.Key;
+            var remainingValue = Cardinal[remainingDigit];
+            var resultNumber = string.Concat(cardinalNumber.Value, "-", remainingValue);
 
             return resultNumber;
 
         }
         public string ConvertHundreds(int number)
         {
-            var dict = new List<string>();
-            var lessThan100 = number - number / 100 * 100;
-            if (Cardinal.ContainsKey(lessThan100))
-            {
-                var item = Cardinal[lessThan100];
-                if (lessThan100 != 0 || lessThan100 == 0 && number == 0)
-                {
-                    dict.Add(item);
-                }
-            }
-            else
-            {
-                var cardinalNumber = FirstCardinalNumberSmallerThan(lessThan100);
-                var digit = lessThan100 - cardinalNumber.Key;
-                var remainingKey = Cardinal[digit];
-                var resultNumber = string.Concat(cardinalNumber.Value, "-", remainingKey);
-
-                dict.Add(resultNumber);
-            }
+            var tens = ConvertTens(number);
 
             number /= 100;
-            var hundreds = number % 10;
-            if (hundreds != 0)
+            var hundredsDigit = number % 10;
+            if (hundredsDigit != 0)
             {
-                dict.Add(string.Concat(Cardinal[hundreds]," ",Hundred));
+                var tensSeparator = tens != "" ? " " : "";
+                return string.Concat(Cardinal[hundredsDigit]," ",Hundred, tensSeparator,tens);
             }
-            return ReverseListAppender(null,dict);
+            return tens;
         }
 
         public string ToWords(decimal number)

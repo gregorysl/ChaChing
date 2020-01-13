@@ -22,7 +22,20 @@ namespace ChaChing.Test
         {
             var data = new Helper().LoadTestDataDictionary();
             data.Remove(1);
-                var tests = data.Where(x => x.Key < 1000);
+            var tests = data.Where(x => x.Key < 1000);
+            var c = new Converter();
+            foreach (var test in tests)
+            {
+                var result = c.ConvertHundreds(test.Key);
+                Assert.AreEqual(test.Value.Replace(" dollars",""), result);
+            }
+        }
+        [TestMethod]
+        public void CheckTens()
+        {
+            var data = new Helper().LoadTestDataDictionary();
+            data.Remove(1);
+            var tests = data.Where(x => x.Key < 100);
             var c = new Converter();
             foreach (var test in tests)
             {
