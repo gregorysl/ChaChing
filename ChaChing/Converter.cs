@@ -54,42 +54,57 @@ namespace ChaChing
             }
         }
 
-        public string ConvertHundreds(int dollars)
+        public string ConvertTens(int number)
         {
-            var sb= new StringBuilder();
-            var dict = new List<string>();
-            var lessThan100 = dollars - dollars / 100 * 100;
+            var lessThan100 = number - number / 100 * 100;
             if (Cardinal.ContainsKey(lessThan100))
             {
                 var item = Cardinal[lessThan100];
-                if (lessThan100 != 0 || lessThan100 == 0 && dollars == 0)
+                if (lessThan100 != 0 || lessThan100 == 0 && number == 0)
+                {
+                    return item;
+                }
+
+                return "";
+            }
+
+            var cardinalNumber = FirstCardinalNumberSmallerThan(lessThan100);
+            var digit = lessThan100 - cardinalNumber.Key;
+            var remainingKey = Cardinal[digit];
+            var resultNumber = string.Concat(cardinalNumber.Value, "-", remainingKey);
+
+            return resultNumber;
+
+        }
+        public string ConvertHundreds(int number)
+        {
+            var dict = new List<string>();
+            var lessThan100 = number - number / 100 * 100;
+            if (Cardinal.ContainsKey(lessThan100))
+            {
+                var item = Cardinal[lessThan100];
+                if (lessThan100 != 0 || lessThan100 == 0 && number == 0)
                 {
                     dict.Add(item);
                 }
             }
             else
             {
-                var smaller = FirstSmaller(lessThan100);
-                sb.Append(smaller.Value);
-                var remaining = lessThan100 - smaller.Key;
-                if (remaining > 0)
-                {
-                    var remainingKey = Cardinal[remaining];
-                    sb.Append("-").Append(remainingKey);
-                }
+                var cardinalNumber = FirstCardinalNumberSmallerThan(lessThan100);
+                var digit = lessThan100 - cardinalNumber.Key;
+                var remainingKey = Cardinal[digit];
+                var resultNumber = string.Concat(cardinalNumber.Value, "-", remainingKey);
 
-                dict.Add(sb.ToString());
-                sb.Clear();
+                dict.Add(resultNumber);
             }
 
-            dollars /= 100;
-            var hundreds = dollars % 10;
+            number /= 100;
+            var hundreds = number % 10;
             if (hundreds != 0)
             {
-                dict.Add(Hundred);
-                dict.Add(Cardinal[hundreds]);
+                dict.Add(string.Concat(Cardinal[hundreds]," ",Hundred));
             }
-            return ReverseListAppender(sb,dict);
+            return ReverseListAppender(null,dict);
         }
 
         public string ToWords(decimal number)
@@ -128,6 +143,7 @@ namespace ChaChing
 
         private string ReverseListAppender(StringBuilder sb,List<string> dict)
         {
+            sb = sb ?? new StringBuilder();
             dict = dict.Where(x => !string.IsNullOrWhiteSpace(x)).ToList(); //TODO: Find better solution
             for (var i = dict.Count - 1; i >= 0; i--)
             {
@@ -137,7 +153,7 @@ namespace ChaChing
             return sb.ToString().Trim();
         }
 
-        private KeyValuePair<int, string> FirstSmaller(int number)
+        private KeyValuePair<int, string> FirstCardinalNumberSmallerThan(int number)
         {
             return Cardinal.Last(x => x.Key < number);
         }
