@@ -7,11 +7,14 @@ namespace ChaChing
 {
     public class Converter
     {
-        
-        public const string Cent = "cent";
-        public const string Dollar = "dollar";
-        public const string Hundred = "hundred";
-        public string[] Separators = {"", "thousand", "million"};
+        private const string ErrorMessage = "Error! Input number should be between 0 and 999 999 999,99";
+        private const decimal MinValue = 0;
+        private const decimal MaxValue = 999999999.99M;
+
+        private const string Cent = "cent";
+        private const string Dollar = "dollar";
+        private const string Hundred = "hundred";
+        private readonly string[] _separators = {"", "thousand", "million"};
         public Dictionary<int, string> Cardinal = new Dictionary<int, string>
         {
             {0, "zero"},
@@ -103,7 +106,7 @@ namespace ChaChing
             var dict = new List<string>();
             var integer = (int) number;
 
-            foreach (var separator in Separators)
+            foreach (var separator in _separators)
             {
                 var hundreds = ConvertHundreds(integer);
                 if (!string.IsNullOrWhiteSpace(hundreds))
@@ -123,6 +126,10 @@ namespace ChaChing
 
         public string ToWords(decimal number)
         {
+            if(MinValue > number ^ number > MaxValue)
+            {
+                return ErrorMessage;
+            }
             var wordedNumber = ConvertNumber(number);
             var dollarsEnding = ((int)number).Equals(1) ? "" : "s";
             var centValue = number != Math.Truncate(number) ? ConvertCents(number) : "";

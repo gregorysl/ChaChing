@@ -52,6 +52,26 @@ namespace ChaChing.Test
             Assert.AreEqual(text, result);
         }
         
+        [TestMethod]
+        public void ShouldReturnErrorOnTooLargeNumber()
+        {
+            const decimal number = 9999999999;
+            const string text = "Error! Input number should be between 0 and 999 999 999,99";
+            var c = new Converter();
+            var result = c.ToWords(number);
+            Assert.AreEqual(text, result);
+        }
+        
+        [TestMethod]
+        public void ShouldReturnErrorOnTooSmallNumber()
+        {
+            const decimal number = -1;
+            const string text = "Error! Input number should be between 0 and 999 999 999,99";
+            var c = new Converter();
+            var result = c.ToWords(number);
+            Assert.AreEqual(text, result);
+        }
+        
         private static IEnumerable<KeyValuePair<string, string>> LoadTestDataForNumbers(int max)
         {
             var data = new Helper().LoadTestDataDictionary();
