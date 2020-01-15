@@ -92,26 +92,23 @@ namespace ChaChing
         }
         private string ConvertNumber(decimal number)
         {
-            var sb = new StringBuilder();
-            var dict = new List<string>();
             var integer = (int) number;
-
+            var result = "";
             foreach (var separator in _separators)
             {
                 var hundreds = ConvertHundreds(integer);
                 if (!string.IsNullOrWhiteSpace(hundreds))
                 {
                     var separatorSpace = string.IsNullOrEmpty(separator) ? "" : " ";
-                    var separatorWord = string.Concat(hundreds, separatorSpace, separator);
-                    dict.Add(separatorWord);
+                    var secondSeparator = string.IsNullOrEmpty(result) ? "" : " ";
+                    result = string.Concat(hundreds, separatorSpace, separator, secondSeparator, result);
                 }
 
                 integer /= 1000;
 
                 if (integer <= 0) break;
             }
-            
-            return ReverseListAppender(dict);
+            return result;
         }
 
         public string ToWords(string input)
@@ -128,17 +125,6 @@ namespace ChaChing
             var centValue = numberParts.Length == 2 ? ConvertCents(numberParts[1]) : "";
 
             return string.Concat(wordedNumber, " ", Consts.Dollar, dollarsEnding, centValue);
-        }
-
-        private string ReverseListAppender(List<string> dict)
-        {
-            var sb = new StringBuilder();
-            for (var i = dict.Count - 1; i >= 0; i--)
-            {
-                sb.Append(dict[i]).Append(" ");
-            }
-
-            return sb.ToString().Trim();
         }
 
         private bool IsValid(string input)
