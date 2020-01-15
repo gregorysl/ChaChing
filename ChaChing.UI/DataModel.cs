@@ -2,6 +2,6 @@
 {
     public class DataModel
     {
-        public decimal Input { get; set; }
+        public string Input { get; set; } = "123456789,01";
     }
 }

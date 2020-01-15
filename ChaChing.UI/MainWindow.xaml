@@ -15,7 +15,8 @@
         <local:DataModel/>
     </Window.DataContext>
     <Window.Resources>
-        <local:ServiceConverter x:Key="NumberConverter" />
+        <local:ServiceConverter x:Key="ServiceConverter" />
+        <local:NumberFormatConventer x:Key="NumberFormatConventer" />
     </Window.Resources>
     <StackPanel Orientation="Vertical" Margin="5">
         <TextBlock
@@ -30,9 +31,9 @@
             Maximum="999999999.99"
             TickFrequency="0.01"
             IsSnapToTickEnabled="True"
-            Value="{Binding Input, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            Value="{Binding Input, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource NumberFormatConventer}}" />
         <TextBlock 
-            Text="{Binding Input, Converter={StaticResource NumberConverter}}"
+            Text="{Binding Input, Converter={StaticResource ServiceConverter}}"
             Style="{StaticResource BaseTextBlockStyle}" />
     </StackPanel>
 </Window>

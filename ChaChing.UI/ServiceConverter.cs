@@ -9,13 +9,13 @@ namespace ChaChing.UI
     {
         private readonly ConverterServiceClient _converter = new ConverterServiceClient();
 
-        public object Convert(object value, Type targetType, 
+        public object Convert(object value, Type targetType,
             object parameter, CultureInfo culture)
         {
-            var number = value as decimal?;
-            var request = new NumberToEnglishRequest(number.GetValueOrDefault(0));
+            var number = value?.ToString();
+            var request = new NumberToEnglishRequest(number);
             var response = _converter.NumberToEnglish(request);
-            
+
             return response.NumberToEnglishResult;
         }
  
