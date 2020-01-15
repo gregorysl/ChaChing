@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace ChaChing
 {
     public class Converter
     {
-        private readonly string[] _separators = {"", "thousand", "million"};
+        private readonly string[] _separators = { "", "thousand", "million" };
         public Dictionary<int, string> Cardinal = new Dictionary<int, string>
         {
             {0, ""},
@@ -53,7 +51,7 @@ namespace ChaChing
                 Cardinal.Add(ten.Key, ten.Value);
             }
         }
-        
+
         private string ConvertCents(string centsString)
         {
             var centsPart = decimal.Parse(centsString);
@@ -65,7 +63,7 @@ namespace ChaChing
 
         public string ConvertTens(decimal number)
         {
-            var tens = (int) (number % 100);
+            var tens = (int)(number % 100);
             if (Cardinal.ContainsKey(tens))
             {
                 return Cardinal[tens];
@@ -83,25 +81,21 @@ namespace ChaChing
         {
             var tens = ConvertTens(number);
 
-            number /= 100;
-            var hundredsDigit = (int)(number % 10);
-            if (hundredsDigit == 0) return tens;
-            var tensSeparator = tens != "" ? " " : "";
-            return string.Concat(Cardinal[hundredsDigit], " ", Consts.Hundred, tensSeparator, tens);
-
+            var hundredsDigit = (int)(number / 100 % 10);
+            return hundredsDigit == 0
+                ? tens
+                : string.Concat(Cardinal[hundredsDigit], " ", Consts.Hundred, CreateSeparatorIfNotEmpty(tens), tens);
         }
         private string ConvertNumber(decimal number)
         {
-            var integer = (int) number;
+            var integer = Math.Truncate(number);
             var result = "";
             foreach (var separator in _separators)
             {
                 var hundreds = ConvertHundreds(integer);
                 if (!string.IsNullOrWhiteSpace(hundreds))
                 {
-                    var separatorSpace = string.IsNullOrEmpty(separator) ? "" : " ";
-                    var secondSeparator = string.IsNullOrEmpty(result) ? "" : " ";
-                    result = string.Concat(hundreds, separatorSpace, separator, secondSeparator, result);
+                    result = string.Concat(hundreds, CreateSeparatorIfNotEmpty(separator), separator, CreateSeparatorIfNotEmpty(result), result);
                 }
 
                 integer /= 1000;
@@ -120,7 +114,7 @@ namespace ChaChing
             var number = Convert.ToDecimal(input, Consts.CultureInfo);
             var numberParts = input.Split(',');
             var wordedNumber = numberParts[0] == "0" ? "zero" : ConvertNumber(number);
-            var dollarsEnding = ((int)number).Equals(1) ? "" : "s";
+            var dollarsEnding = Math.Truncate(number).Equals(1) ? "" : "s";
 
             var centValue = numberParts.Length == 2 ? ConvertCents(numberParts[1]) : "";
 
@@ -136,6 +130,11 @@ namespace ChaChing
         private KeyValuePair<int, string> FirstCardinalNumberSmallerThan(int number)
         {
             return Cardinal.Last(x => x.Key < number);
+        }
+
+        private string CreateSeparatorIfNotEmpty(string field)
+        {
+            return string.IsNullOrWhiteSpace(field) ? "" : " ";
         }
     }
 }
