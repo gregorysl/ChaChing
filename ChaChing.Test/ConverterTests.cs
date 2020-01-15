@@ -43,6 +43,16 @@ namespace ChaChing.Test
         }
 
         [TestMethod]
+        public void CheckTensLargeNumber()
+        {
+            const decimal number = 1071339.38M;
+            const string text = "thirty-nine";
+            var c = new Converter();
+            var result = c.ConvertTens(number);
+            Assert.AreEqual(text, result);
+        }
+
+        [TestMethod]
         public void TestOne()
         {
             const string number = "1071339";

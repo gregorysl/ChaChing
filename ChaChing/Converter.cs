@@ -53,13 +53,13 @@ namespace ChaChing
                 Cardinal.Add(ten.Key, ten.Value);
             }
         }
-
-        private string ConvertCents(decimal number)
+        
+        private string ConvertCents(string centsString)
         {
-            var tensCent = (int) ((number - Math.Truncate(number)) * 100);
-            var wordNumber = ConvertHundreds(tensCent);
-            var centsEnding = tensCent == 1 ? "" : "s";
-            var centValue = string.Concat(" and ", wordNumber, " ", Consts.Cent, centsEnding);
+            var centsPart = decimal.Parse(centsString);
+            var centsWord = ConvertTens(centsPart);
+            var centsEnding = centsString == "01" ? "" : "s";
+            var centValue = string.Concat(" and ", centsWord, " ", Consts.Cent, centsEnding);
             return centValue;
         }
 
@@ -122,11 +122,12 @@ namespace ChaChing
             {
                 return Consts.ErrorMessage;
             }
-            var number = Convert.ToDecimal(input, new CultureInfo("pl-PL"));
-
+            var number = Convert.ToDecimal(input, Consts.CultureInfo);
+            var numberParts = input.Split(',');
             var wordedNumber = ConvertNumber(number);
             var dollarsEnding = ((int)number).Equals(1) ? "" : "s";
-            var centValue = number != Math.Truncate(number) ? ConvertCents(number) : "";
+
+            var centValue = numberParts.Length == 2 ? ConvertCents(numberParts[1]) : "";
 
             return string.Concat(wordedNumber, " ", Consts.Dollar, dollarsEnding, centValue);
         }
