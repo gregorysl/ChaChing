@@ -1,19 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace ChaChing
 {
     public class Converter
     {
-        private const string ErrorMessage = "Error! Input number should be between 0 and 999 999 999,99";
-        private const decimal MinValue = 0;
-        private const decimal MaxValue = 999999999.99M;
-
-        private const string Cent = "cent";
-        private const string Dollar = "dollar";
-        private const string Hundred = "hundred";
         private readonly string[] _separators = {"", "thousand", "million"};
         public Dictionary<int, string> Cardinal = new Dictionary<int, string>
         {
@@ -64,7 +59,7 @@ namespace ChaChing
             var tensCent = (int) ((number - Math.Truncate(number)) * 100);
             var wordNumber = ConvertHundreds(tensCent);
             var centsEnding = tensCent == 1 ? "" : "s";
-            var centValue = string.Concat(" and ", wordNumber, " ", Cent, centsEnding);
+            var centValue = string.Concat(" and ", wordNumber, " ", Consts.Cent, centsEnding);
             return centValue;
         }
 
@@ -94,7 +89,7 @@ namespace ChaChing
             var hundredsDigit = (int)(number % 10);
             if (hundredsDigit == 0) return tens;
             var tensSeparator = tens != "" ? " " : "";
-            return string.Concat(Cardinal[hundredsDigit], " ", Hundred, tensSeparator, tens);
+            return string.Concat(Cardinal[hundredsDigit], " ", Consts.Hundred, tensSeparator, tens);
 
         }
         private string ConvertNumber(decimal number)
@@ -123,17 +118,18 @@ namespace ChaChing
 
         public string ToWords(string input)
         {
-            var number = Convert.ToDecimal(input);
-
-            if(MinValue > number ^ number > MaxValue)
+            input = input.Replace(" ", "");
+            if (!IsValid(input))
             {
-                return ErrorMessage;
+                return Consts.ErrorMessage;
             }
+            var number = Convert.ToDecimal(input, new CultureInfo("pl-PL"));
+
             var wordedNumber = ConvertNumber(number);
             var dollarsEnding = ((int)number).Equals(1) ? "" : "s";
             var centValue = number != Math.Truncate(number) ? ConvertCents(number) : "";
 
-            return string.Concat(wordedNumber, " ", Dollar, dollarsEnding, centValue);
+            return string.Concat(wordedNumber, " ", Consts.Dollar, dollarsEnding, centValue);
         }
 
         private string ReverseListAppender(List<string> dict)
@@ -145,6 +141,12 @@ namespace ChaChing
             }
 
             return sb.ToString().Trim();
+        }
+
+        private bool IsValid(string input)
+        {
+            var regex = new Regex(@"^\d{1,9}(\,\d{0,2})?$");
+            return regex.Match(input).Success;
         }
 
         private KeyValuePair<int, string> FirstCardinalNumberSmallerThan(int number)
