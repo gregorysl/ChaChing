@@ -55,7 +55,7 @@ namespace ChaChing.Test
         [TestMethod]
         public void ShouldReturnErrorWrongInput()
         {
-            var tests = new[] { "9999999999", "-1", "Number", "1.01" };
+            var tests = new[] { "9999999999", "-1", "Number", "1.01", null };
             var c = new Converter();
             foreach (var test in tests)
             {

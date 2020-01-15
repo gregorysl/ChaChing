@@ -118,7 +118,6 @@ namespace ChaChing
 
         public string ToWords(string input)
         {
-            input = input.Replace(" ", "");
             if (!IsValid(input))
             {
                 return Consts.ErrorMessage;
@@ -145,8 +144,8 @@ namespace ChaChing
 
         private bool IsValid(string input)
         {
-            var regex = new Regex(@"^\d{1,9}(\,\d{0,2})?$");
-            return regex.Match(input).Success;
+            var regex = new Regex(@"^(?:\d *){1,9}(?:\,\d{0,2})?$");
+            return input != null && regex.Match(input).Success;
         }
 
         private KeyValuePair<int, string> FirstCardinalNumberSmallerThan(int number)
