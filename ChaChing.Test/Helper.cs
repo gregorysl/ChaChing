@@ -24,7 +24,7 @@ namespace ChaChing.Test
         {
             var fileContents = ReadResource("TestData.csv");
             return fileContents.Split(new[] {"\r\n", "\r", "\n"}, StringSplitOptions.RemoveEmptyEntries)
-                .Select(line => line.Split(','))
+                .Select(line => line.Split(';'))
                 .ToDictionary(line => line[0], line => line[1]);
         }
     }

@@ -16,7 +16,7 @@ namespace ChaChing.Test
             foreach (var test in tests)
             {
                 var result = c.ToWords(test.Key);
-                Assert.AreEqual(test.Value, result);
+                Assert.AreEqual(test.Value, result, $"Test:{test.Key}");
             }
         }
         [TestMethod]
@@ -26,7 +26,7 @@ namespace ChaChing.Test
             var c = new Converter();
             foreach (var test in tests)
             {
-                var result = c.ConvertHundreds(Convert.ToDecimal(test.Key));
+                var result = c.ConvertHundreds(Convert.ToDecimal(test.Key, Consts.CultureInfo));
                 Assert.AreEqual(test.Value.Replace(" dollars", ""), result);
             }
         }
@@ -41,7 +41,7 @@ namespace ChaChing.Test
                 Assert.AreEqual(test.Value.Replace(" dollars", ""), result);
             }
         }
-        
+
         [TestMethod]
         public void TestOne()
         {
@@ -51,34 +51,27 @@ namespace ChaChing.Test
             var result = c.ToWords(number);
             Assert.AreEqual(text, result);
         }
-        
+
         [TestMethod]
-        public void ShouldReturnErrorOnTooLargeNumber()
+        public void ShouldReturnErrorWrongInput()
         {
-            const string number = "9999999999";
-            const string text = "Error! Input number should be between 0 and 999 999 999,99";
+            var tests = new[] { "9999999999", "-1", "Number", "1.01" };
             var c = new Converter();
-            var result = c.ToWords(number);
-            Assert.AreEqual(text, result);
+            foreach (var test in tests)
+            {
+                var result = c.ToWords(test);
+                Assert.AreEqual(Consts.ErrorMessage, result, $"Test input: '{test}'");
+            }
         }
-        
-        [TestMethod]
-        public void ShouldReturnErrorOnTooSmallNumber()
-        {
-            const string number = "-1";
-            const string text = "Error! Input number should be between 0 and 999 999 999,99";
-            var c = new Converter();
-            var result = c.ToWords(number);
-            Assert.AreEqual(text, result);
-        }
-        
+
+
         private static IEnumerable<KeyValuePair<string, string>> LoadTestDataForNumbers(int max)
         {
             var data = new Helper().LoadTestDataDictionary();
             data.Remove("1");
-            var tests = data.Where(x=>
+            var tests = data.Where(x =>
             {
-                var currentNumber = Convert.ToDouble(x.Key);
+                var currentNumber = Convert.ToDouble(x.Key, Consts.CultureInfo);
                 var numberAsInteger = currentNumber - Math.Truncate(currentNumber);
                 return numberAsInteger.Equals(0) && currentNumber < max;
             });
