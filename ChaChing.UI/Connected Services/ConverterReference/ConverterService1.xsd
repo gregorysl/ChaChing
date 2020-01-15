@@ -3,7 +3,7 @@
   <xs:element name="NumberToEnglish">
     <xs:complexType>
       <xs:sequence>
-        <xs:element minOccurs="0" name="value" type="xs:decimal" />
+        <xs:element minOccurs="0" name="input" nillable="true" type="xs:string" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

@@ -30,13 +30,13 @@ namespace ChaChing.UI.ConverterReference {
     public partial class NumberToEnglishRequest {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="http://tempuri.org/", Order=0)]
-        public decimal value;
+        public string input;
         
         public NumberToEnglishRequest() {
         }
         
-        public NumberToEnglishRequest(decimal value) {
-            this.value = value;
+        public NumberToEnglishRequest(string input) {
+            this.input = input;
         }
     }
     
