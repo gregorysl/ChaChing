@@ -92,13 +92,10 @@ namespace ChaChing
 
             number /= 100;
             var hundredsDigit = (int)(number % 10);
-            if (hundredsDigit != 0)
-            {
-                var tensSeparator = tens != "" ? " " : "";
-                return string.Concat(Cardinal[hundredsDigit], " ", Hundred, tensSeparator, tens);
-            }
+            if (hundredsDigit == 0) return tens;
+            var tensSeparator = tens != "" ? " " : "";
+            return string.Concat(Cardinal[hundredsDigit], " ", Hundred, tensSeparator, tens);
 
-            return tens;
         }
         private string ConvertNumber(decimal number)
         {
