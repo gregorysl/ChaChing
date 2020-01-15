@@ -144,7 +144,7 @@ namespace ChaChing
 
         private bool IsValid(string input)
         {
-            var regex = new Regex(@"^(?:\d *){1,9}(?:\,\d{0,2})?$");
+            var regex = new Regex(@"^(?:\d\s*){1,9}(?:\,\d{0,2})?$");
             return input != null && regex.Match(input).Success;
         }
 
