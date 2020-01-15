@@ -12,7 +12,7 @@ namespace ChaChing
         private readonly string[] _separators = {"", "thousand", "million"};
         public Dictionary<int, string> Cardinal = new Dictionary<int, string>
         {
-            {0, "zero"},
+            {0, ""},
             {1, "one"},
             {2, "two"},
             {3, "three"},
@@ -65,20 +65,18 @@ namespace ChaChing
 
         public string ConvertTens(decimal number)
         {
-            var restFrom100 = (int) (number % 100);
-            if (Cardinal.ContainsKey(restFrom100))
+            var tens = (int) (number % 100);
+            if (Cardinal.ContainsKey(tens))
             {
-                var item = Cardinal[restFrom100];
-                return !restFrom100.Equals(0) || restFrom100.Equals(0) && number.Equals(0) ? item : "";
+                return Cardinal[tens];
             }
 
-            var cardinalNumber = FirstCardinalNumberSmallerThan(restFrom100);
-            var remainingDigit = restFrom100 - cardinalNumber.Key;
+            var cardinalNumber = FirstCardinalNumberSmallerThan(tens);
+            var remainingDigit = tens - cardinalNumber.Key;
             var remainingValue = Cardinal[remainingDigit];
             var resultNumber = string.Concat(cardinalNumber.Value, "-", remainingValue);
 
             return resultNumber;
-
         }
 
         public string ConvertHundreds(decimal number)
@@ -124,7 +122,7 @@ namespace ChaChing
             }
             var number = Convert.ToDecimal(input, Consts.CultureInfo);
             var numberParts = input.Split(',');
-            var wordedNumber = ConvertNumber(number);
+            var wordedNumber = numberParts[0] == "0" ? "zero" : ConvertNumber(number);
             var dollarsEnding = ((int)number).Equals(1) ? "" : "s";
 
             var centValue = numberParts.Length == 2 ? ConvertCents(numberParts[1]) : "";

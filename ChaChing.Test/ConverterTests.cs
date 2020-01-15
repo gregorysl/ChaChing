@@ -78,7 +78,8 @@ namespace ChaChing.Test
         private static IEnumerable<KeyValuePair<string, string>> LoadTestDataForNumbers(int max)
         {
             var data = new Helper().LoadTestDataDictionary();
-            data.Remove("1");
+            data.Remove("0"); // helper method wont return zero
+            data.Remove("1"); // it should return dollars and one returns dollar
             var tests = data.Where(x =>
             {
                 var currentNumber = Convert.ToDouble(x.Key, Consts.CultureInfo);
