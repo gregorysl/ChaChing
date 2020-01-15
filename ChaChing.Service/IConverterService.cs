@@ -7,6 +7,6 @@ namespace ChaChing.Service
     public interface IConverterService
     {
         [OperationContract]
-        string NumberToEnglish(decimal value);
+        string NumberToEnglish(string input);
     }
 }

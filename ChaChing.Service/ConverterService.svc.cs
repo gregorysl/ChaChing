@@ -2,10 +2,10 @@
 {
     public class ConverterService : IConverterService
     {
-        public string NumberToEnglish(decimal value)
+        public string NumberToEnglish(string input)
         {
             var conventer = new Converter();
-            return conventer.ToWords(value);
+            return conventer.ToWords(input);
         }
     }
 }

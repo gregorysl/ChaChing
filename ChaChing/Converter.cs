@@ -121,8 +121,10 @@ namespace ChaChing
             return ReverseListAppender(dict);
         }
 
-        public string ToWords(decimal number)
+        public string ToWords(string input)
         {
+            var number = Convert.ToDecimal(input);
+
             if(MinValue > number ^ number > MaxValue)
             {
                 return ErrorMessage;

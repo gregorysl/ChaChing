@@ -15,7 +15,7 @@ namespace ChaChing.Test
             var c = new Converter();
             foreach (var test in tests)
             {
-                var result = c.ToWords(Convert.ToDecimal(test.Key));
+                var result = c.ToWords(test.Key);
                 Assert.AreEqual(test.Value, result);
             }
         }
@@ -45,7 +45,7 @@ namespace ChaChing.Test
         [TestMethod]
         public void TestOne()
         {
-            const int number = 1071339;
+            const string number = "1071339";
             const string text = "one million seventy-one thousand three hundred thirty-nine dollars";
             var c = new Converter();
             var result = c.ToWords(number);
@@ -55,7 +55,7 @@ namespace ChaChing.Test
         [TestMethod]
         public void ShouldReturnErrorOnTooLargeNumber()
         {
-            const decimal number = 9999999999;
+            const string number = "9999999999";
             const string text = "Error! Input number should be between 0 and 999 999 999,99";
             var c = new Converter();
             var result = c.ToWords(number);
@@ -65,7 +65,7 @@ namespace ChaChing.Test
         [TestMethod]
         public void ShouldReturnErrorOnTooSmallNumber()
         {
-            const decimal number = -1;
+            const string number = "-1";
             const string text = "Error! Input number should be between 0 and 999 999 999,99";
             var c = new Converter();
             var result = c.ToWords(number);
